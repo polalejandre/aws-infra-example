@@ -32,7 +32,7 @@ content: |-
   {{ .Providers }}
 
 output:
-  file: "RESOURCES.md"
+  file: "docs/RESOURCES.md"
   # mode: inject
   mode: replace
   template: |-
