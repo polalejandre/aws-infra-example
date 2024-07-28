@@ -1,0 +1,66 @@
+formatter: "markdown"
+
+version: ">= 0.18.0"
+
+# File from where i5t will obtain the doc header. If it is a tf file, it will take obnly the first java like comment
+header-from: main.tf
+footer-from: ""
+
+recursive:
+  enabled: false
+  path: modules
+
+sections:
+  hide-all: false
+  show-all: true
+  # hide: []
+  # show:
+  #   -
+  #   - providers
+  #   - inputs
+  #   - outputs
+
+content: |-
+  > :warning: This documentation has been generated from terraform-docs. Any change to README.md file will be deleted!
+
+  {{ .Header }}
+  {{ .Modules }}
+  {{ .Resources }}
+  {{ .Inputs }}
+  {{ .Outputs }}
+  {{ .Requirements }}
+  {{ .Providers }}
+
+output:
+  file: "README.md"
+  # mode: inject
+  mode: replace
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->    
+
+output-values:
+  enabled: false
+  from: ""
+
+sort:
+  enabled: true
+  # by: name
+  by: required
+
+settings:
+  anchor: true
+  color: true
+  default: true
+  description: true
+  escape: true
+  hide-empty: true
+  html: true
+  indent: 2
+  lockfile: true
+  read-comments: true
+  required: true
+  sensitive: true
+  type: true
+
