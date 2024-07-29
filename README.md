@@ -1,6 +1,6 @@
 # Terraform AWS Infrastructure Project
 
-This project uses Terraform to create and manage a complete infrastructure on AWS. The infrastructure includes networks, subnets, a database with stored secrets, a private EKS cluster, KMS keys for encryption, and a bastion host with SSM enabled.
+This project uses Terraform to create and manage a base infrastructure on AWS. The infrastructure includes networks, subnets, a database with stored secrets, a private EKS cluster, KMS keys for encryption, and a bastion host with SSM enabled.
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
@@ -22,7 +22,7 @@ This project uses Terraform to create and manage a complete infrastructure on AW
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
-- [Terraform](https://www.terraform.io/downloads.html) v1.0 or later
+- [Terraform](https://www.terraform.io/downloads.html) v1.8.5 or later
 - [AWS CLI](https://aws.amazon.com/cli/) configured with appropriate IAM permissions
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for EKS management
 
@@ -79,23 +79,74 @@ The infrastructure created by this project includes the following components:
 Clone the repository and navigate to the project directory:
 
 ```bash
-git clone https://github.com/your-repo/terraform-aws-infrastructure.git
+git clone https://github.com/polalejandre/aws-infra-example.git
 cd terraform-aws-infrastructure
 ```
 
 ### Configuration
 
-Create a `terraform.tfvars` file in the project directory and specify the required variables:
+Create a `terraform.tfvars` file in the project directory and specify the required variables. These are the variables used for this example:
 
 ```hcl
-aws_region       = "us-west-2"
-vpc_cidr         = "10.0.0.0/16"
-public_subnets   = ["10.0.1.0/24", "10.0.2.0/24"]
-private_subnets  = ["10.0.3.0/24", "10.0.4.0/24"]
-database_subnets = ["10.0.5.0/24", "10.0.6.0/24"]
-eks_cluster_name = "my-eks-cluster"
-db_username      = "admin"
-db_password      = "your-secure-password"
+vpc_cidr = {
+  dev = {
+    eu-central-1 = "10.10.0.0/16"
+    eu-west-1    = "10.11.0.0/16"
+  }
+  prod = {
+    eu-central-1 = "10.20.0.0/16"
+    eu-west-1    = "10.21.0.0/16"
+  }
+}
+
+availability_zones = {
+  "eu-central-1" = [
+    "euc1-az1",
+    "euc1-az2",
+    "euc1-az3"
+  ],
+  "eu-west-1" = [
+    "euw1-az1",
+    "euw1-az2",
+    "euw1-az3"
+  ]
+}
+
+public_subnet_size   = 3
+private_subnet_size  = 3
+database_subnet_size = 3
+
+# EKS
+instance_types = {
+  "dev"     = ["t3.small"]
+  "staging" = ["t3.medium"]
+  "prod"    = ["t3.large"]
+}
+capacity_type = {
+  "dev"     = "SPOT"
+  "staging" = "ONDEMAND"
+  "prod"    = "ONDEMAND"
+}
+cluster_addons_versions = {
+  coredns    = "v1.11.1-eksbuild.9"
+  kube-proxy = "v1.30.0-eksbuild.3"
+  vpc-cni    = "v1.18.2-eksbuild.1"
+}
+
+# DB
+instance_class = {
+  "dev"     = "db.t3.micro"
+  "staging" = "db.t3.medium"
+  "prod"    = "db.t3.large"
+}
+engine_version = {
+  "dev"     = "8.0"
+  "staging" = "8.0"
+  "prod"    = "8.0"
+}
+
+# Bastion
+bastion_instance_type = "t3.medium"
 ```
 
 ### Deployment
