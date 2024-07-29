@@ -2,6 +2,8 @@
 
 This project uses Terraform to create and manage a base infrastructure on AWS. The infrastructure includes networks, subnets, a database with stored secrets, a private EKS cluster, KMS keys for encryption, and a bastion host with SSM enabled.
 
+The initial config is created in the bootsrap folder, so that config need to be applied first!
+
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
 2. [Architecture Overview](#architecture-overview)
@@ -85,7 +87,9 @@ cd terraform-aws-infrastructure
 
 ### Configuration
 
-Create a `terraform.tfvars` file in the project directory and specify the required variables. These are the variables used for this example:
+1. Set the bucket names in "bootstrap" folder in order to create the bucket for the remote states, and apply the config.
+
+2. Create a `terraform.tfvars` file in the project directory and specify the required variables. These are the variables used for this example:
 
 ```hcl
 vpc_cidr = {
